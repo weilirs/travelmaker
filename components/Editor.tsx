@@ -1,11 +1,18 @@
 "use client";
-import { useState } from "react";
 
-const Editor = () => {
+// Editor component
+import { useEffect, useState } from "react";
+
+const Editor = ({ resetTrigger, onChange }) => {
   const [content, setContent] = useState("");
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  useEffect(() => {
+    setContent(""); // Reset content when the resetTrigger changes
+  }, [resetTrigger]);
+
+  const handleChange = (event) => {
     setContent(event.target.value);
+    onChange(event.target.value); // Lift state up to parent
   };
 
   return <textarea value={content} onChange={handleChange} />;
