@@ -4,16 +4,26 @@ import Editor from "@/components/Editor";
 import EntryCard from "@/components/EntryCard";
 import exp from "constants";
 import React, { useState } from "react";
+import { useLocations } from "@/utils/locationContext";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState([]);
   const [resetTrigger, setResetTrigger] = useState(false);
+  const { locations, setLocations } = useLocations(); // Use context
+  const router = useRouter();
 
   const handleSaveClick = () => {
+    setLocations([...locations, input]);
     setEntries([...entries, { text: input }]);
     setInput(""); // Clear the current input state
     setResetTrigger(!resetTrigger); // Toggle the reset trigger to clear the Editor
+  };
+
+  const handleGenerateClick = () => {
+    // Navigate to the map page when Generate is clicked
+    router.push("/main");
   };
   return (
     <div>
@@ -31,7 +41,10 @@ const Dashboard = () => {
       {entries.map((entry, index) => (
         <EntryCard key={index} entry={entry} />
       ))}
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleGenerateClick}
+      >
         Generate
       </button>
     </div>
