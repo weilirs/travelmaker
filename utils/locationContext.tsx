@@ -6,10 +6,13 @@ const LocationContext = createContext();
 export const useLocations = () => useContext(LocationContext);
 
 export const LocationProvider = ({ children }) => {
-  const [locations, setLocations] = useState([]);
+  const [city, setCity] = useState({});
+  const [locations, setLocations] = useState([]); // Initialize locations as an empty array
 
   return (
-    <LocationContext.Provider value={{ locations, setLocations }}>
+    <LocationContext.Provider
+      value={{ locations, setLocations, city, setCity }}
+    >
       {children}
     </LocationContext.Provider>
   );

@@ -7,6 +7,7 @@ import { useLocations } from "@/utils/locationContext";
 const Map = () => {
   const mapRef = React.useRef<HTMLDivElement>(null);
   const { locations } = useLocations();
+  const city = locations[0].city;
 
   useEffect(() => {
     const initMap = async () => {
@@ -28,19 +29,29 @@ const Map = () => {
       const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
 
       const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: city }, (results, status) => {
+        if (status === "OK") {
+          map.setCenter(results[0].geometry.location);
+        } else {
+          console.error("Geocode was not successful for the city: " + status);
+        }
+      });
       locations.forEach((location) => {
-        geocoder.geocode({ address: location }, (results, status) => {
-          if (status === "OK") {
-            new google.maps.Marker({
-              map: map,
-              position: results[0].geometry.location,
-            });
-          } else {
-            console.error(
-              "Geocode was not successful for the following reason: " + status
-            );
+        geocoder.geocode(
+          { address: location.name, componentRestrictions: { locality: city } },
+          (results, status) => {
+            if (status === "OK") {
+              new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+              });
+            } else {
+              console.error(
+                "Geocode was not successful for the following reason: " + status
+              );
+            }
           }
-        });
+        );
       });
     };
     initMap();

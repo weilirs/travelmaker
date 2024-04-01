@@ -1,10 +1,10 @@
-import Map from "@/components/Map";
+import Map1 from "@/components/Map1";
 
 const Main = () => {
   return (
     <div>
       <h1>TravelMaker</h1>
-      <Map />
+      <Map1 />
     </div>
   );
 };
