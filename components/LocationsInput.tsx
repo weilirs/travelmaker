@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 const LocationsInput = () => {
   const { city, locations, setLocations } = useLocations();
   const [input, setInput] = useState("");
+  const [selected, setSelected] = useState(null);
   useEffect(() => {
     const atc = document.getElementById("autocomplete-input");
     const center = city.locationBias; // Center of the bias area
@@ -14,8 +15,20 @@ const LocationsInput = () => {
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       // Handle the selected place data (e.g., place.name, place.geometry.location)
+      if (!place.geometry) {
+        console.log("Returned place contains no geometry");
+        return;
+      }
+      const { location } = place.geometry;
+      const placeDetails = {
+        name: place.name,
+        lat: location.lat(),
+        lng: location.lng(),
+      };
+      setInput(place.name);
+      setSelected(placeDetails);
     });
-  }, []);
+  }, [city]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInput(newValue);
@@ -23,8 +36,9 @@ const LocationsInput = () => {
 
   const handleSaveClick = () => {
     if (input) {
-      setLocations([...locations, { name: input }]);
+      setLocations([...locations, selected]);
       setInput("");
+      setSelected(null);
     }
   };
 

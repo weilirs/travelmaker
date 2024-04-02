@@ -1,8 +1,10 @@
 "use client";
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import { useMemo } from "react";
+import { useLocations } from "@/utils/locationContext";
 
 const Map1 = () => {
+  const { locations } = useLocations();
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
       disableDefaultUI: true,
@@ -12,19 +14,27 @@ const Map1 = () => {
     []
   );
 
-  const mapCenter = useMemo(
-    () => ({ lat: 27.672932021393862, lng: 85.31184012689732 }),
-    []
-  );
+  const markers = locations.map((location) => ({
+    lat: location.lat,
+    lng: location.lng,
+  }));
   return (
     <GoogleMap
       options={mapOptions}
       mapContainerStyle={{ width: "800px", height: "800px" }}
-      center={mapCenter}
+      center={markers[0]}
       zoom={14}
       mapTypeId={google.maps.MapTypeId.ROADMAP}
       onLoad={() => console.log("Map Component Loaded...")}
-    />
+    >
+      {markers.map((marker, index) => (
+        <MarkerF
+          key={index}
+          position={marker}
+          onLoad={() => console.log("Marker Loaded")}
+        />
+      ))}
+    </GoogleMap>
   );
 };
 
