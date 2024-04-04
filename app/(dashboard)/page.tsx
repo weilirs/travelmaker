@@ -28,17 +28,6 @@ const Dashboard = () => {
     return <p>Loading...</p>;
   }
 
-  const handleSaveClick = () => {
-    if (input && city) {
-      setLocations([...locations, { name: input, city }]);
-      // Clear location input after adding
-      setEntries([...entries, { text: input }]);
-      setResetTrigger(!resetTrigger);
-      setInput("");
-      console.log(entries);
-    }
-  };
-
   const handleGenerateClick = () => {
     // Navigate to the map page when Generate is clicked
     router.push("/main");
@@ -49,12 +38,6 @@ const Dashboard = () => {
       <h1>TravelMaker</h1>
       {Object.keys(city).length === 0 ? <CityInput /> : <LocationsInput />}
 
-      <button
-        onClick={handleSaveClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Save
-      </button>
       {entries.map((entry, index) => (
         <EntryCard key={index} entry={entry} />
       ))}
