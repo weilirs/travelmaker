@@ -10,6 +10,7 @@ const Map = () => {
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
+  const [travelMode, setTravelMode] = useState("DRIVING");
 
   const mapOptions = useMemo(
     () => ({
@@ -53,7 +54,7 @@ const Map = () => {
         origin: { lat: origin.lat, lng: origin.lng },
         destination: { lat: destination.lat, lng: destination.lng },
         waypoints: waypoints,
-        travelMode: google.maps.TravelMode.DRIVING,
+        travelMode: google.maps.TravelMode[travelMode],
         optimizeWaypoints: true,
       },
       (result, status) => {
@@ -96,25 +97,36 @@ const Map = () => {
         }
       }
     );
-  }, [locations, origin, destination]);
+  }, [locations, origin, destination, travelMode]);
 
   return (
-    <GoogleMap
-      options={mapOptions}
-      mapContainerStyle={{ width: "800px", height: "800px" }}
-      center={locations[0]}
-      zoom={10}
-      mapTypeId={google.maps.MapTypeId.ROADMAP}
-      onLoad={(map) => (mapRef.current = map)}
-    >
-      {locations.map((location, index) => (
-        <MarkerF
-          key={index}
-          position={{ lat: location.lat, lng: location.lng }}
-          onClick={() => handleMarkerClick(location)}
-        />
-      ))}
-    </GoogleMap>
+    <div>
+      <select
+        value={travelMode}
+        onChange={(e) => setTravelMode(e.target.value)}
+      >
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+      </select>
+      <GoogleMap
+        options={mapOptions}
+        mapContainerStyle={{ width: "800px", height: "800px" }}
+        center={locations[0]}
+        zoom={10}
+        mapTypeId={google.maps.MapTypeId.ROADMAP}
+        onLoad={(map) => (mapRef.current = map)}
+      >
+        {locations.map((location, index) => (
+          <MarkerF
+            key={index}
+            position={{ lat: location.lat, lng: location.lng }}
+            onClick={() => handleMarkerClick(location)}
+          />
+        ))}
+      </GoogleMap>
+    </div>
   );
 };
 
