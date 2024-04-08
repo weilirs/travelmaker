@@ -1,62 +1,121 @@
 "use client";
-
-import React, { useEffect } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
+import { GoogleMap, MarkerF, DirectionsRenderer } from "@react-google-maps/api";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { useLocations } from "@/utils/locationContext";
+import { InfoWindow } from "@react-google-maps/api";
 
 const Map = () => {
-  const mapRef = React.useRef<HTMLDivElement>(null);
   const { locations } = useLocations();
-  const city = locations[0].city;
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
+  const [directions, setDirections] = useState(null);
+  const [polylines, setPolylines] = useState([]); // State to keep track of polylines
+
+  const mapOptions = useMemo(
+    () => ({
+      disableDefaultUI: true,
+      clickableIcons: true,
+      scrollwheel: true,
+    }),
+    []
+  );
+
+  const mapRef = useRef();
+  const directionsService = new google.maps.DirectionsService();
+
+  const handleMarkerClick = (location) => {
+    if (!origin) {
+      setOrigin(location);
+    } else if (!destination && location !== origin) {
+      setDestination(location);
+    } else {
+      setOrigin(location);
+      setDestination(null);
+    }
+  };
 
   useEffect(() => {
-    const initMap = async () => {
-      const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
-        version: "weekly",
-      });
+    if (!origin || !destination) return;
 
-      const { Map } = await loader.importLibrary("maps");
+    // Clear previous polylines from the map
+    polylines.forEach((polyline) => polyline.setMap(null));
+    setPolylines([]); // Reset the polylines state
 
-      const position = { lat: 37.7749, lng: -122.4194 };
+    const waypoints = locations
+      .filter((loc) => loc !== origin && loc !== destination)
+      .map((location) => ({
+        location: { lat: location.lat, lng: location.lng },
+        stopover: true,
+      }));
 
-      const mapOptions: google.maps.MapOptions = {
-        center: position,
-        zoom: 8,
-        mapId: "TravelMaker",
-      };
+    directionsService.route(
+      {
+        origin: { lat: origin.lat, lng: origin.lng },
+        destination: { lat: destination.lat, lng: destination.lng },
+        waypoints: waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setDirections(result);
+          const newPolylines = []; // Temporary array to store new polylines
 
-      const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
+          result.routes[0].legs.forEach((leg) => {
+            var legPath = leg.steps.reduce(
+              (acc, step) => acc.concat(step.path),
+              []
+            );
+            var polyline = new google.maps.Polyline({
+              path: legPath,
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.5,
+              strokeWeight: 4,
+              map: mapRef.current,
+            });
 
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: city }, (results, status) => {
-        if (status === "OK") {
-          map.setCenter(results[0].geometry.location);
-        } else {
-          console.error("Geocode was not successful for the city: " + status);
-        }
-      });
-      locations.forEach((location) => {
-        geocoder.geocode(
-          { address: location.name, componentRestrictions: { locality: city } },
-          (results, status) => {
-            if (status === "OK") {
-              new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location,
+            polyline.addListener("mouseover", function (e) {
+              polyline.setOptions({ strokeOpacity: 1.0 });
+              var infoWindow = new google.maps.InfoWindow({
+                content: "Duration: " + leg.duration.text,
+                position: e.latLng,
               });
-            } else {
-              console.error(
-                "Geocode was not successful for the following reason: " + status
-              );
-            }
-          }
-        );
-      });
-    };
-    initMap();
-  }, [locations]);
+              infoWindow.open(mapRef.current);
+              polyline.addListener("mouseout", function () {
+                polyline.setOptions({ strokeOpacity: 0.5 });
+                infoWindow.close();
+              });
+            });
 
-  return <div ref={mapRef} style={{ height: "400px", width: "100%" }} />;
+            newPolylines.push(polyline); // Add the new polyline to the temporary array
+          });
+
+          setPolylines(newPolylines); // Update the state with the new polylines
+        } else {
+          console.error(`error fetching directions ${result}`);
+        }
+      }
+    );
+  }, [locations, origin, destination]);
+
+  return (
+    <GoogleMap
+      options={mapOptions}
+      mapContainerStyle={{ width: "800px", height: "800px" }}
+      center={locations[0]}
+      zoom={10}
+      mapTypeId={google.maps.MapTypeId.ROADMAP}
+      onLoad={(map) => (mapRef.current = map)}
+    >
+      {locations.map((location, index) => (
+        <MarkerF
+          key={index}
+          position={{ lat: location.lat, lng: location.lng }}
+          onClick={() => handleMarkerClick(location)}
+        />
+      ))}
+    </GoogleMap>
+  );
 };
+
 export default Map;

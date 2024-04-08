@@ -1,10 +1,12 @@
-import Map1 from "@/components/Map1";
+import Map from "@/components/Map";
+import Weather from "@/components/weather";
 
 const Main = () => {
   return (
     <div>
       <h1>TravelMaker</h1>
-      <Map1 />
+      <Weather />
+      <Map />
     </div>
   );
 };
