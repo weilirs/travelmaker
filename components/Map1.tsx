@@ -5,44 +5,42 @@ import { useLocations } from "@/utils/locationContext";
 import { InfoWindow } from "@react-google-maps/api";
 
 const Map1 = () => {
-  // TODO: allow user to select travel mode, when changing origin or destination, recalculate route
   const { locations } = useLocations();
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [directions, setDirections] = useState(null);
+  const [polylines, setPolylines] = useState([]); // State to keep track of polylines
 
-  const mapOptions = useMemo<google.maps.MapOptions>(
+  const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
       clickableIcons: true,
-      scrollwheel: false,
+      scrollwheel: true,
     }),
     []
   );
+
+  const mapRef = useRef();
+  const directionsService = new google.maps.DirectionsService();
+
   const handleMarkerClick = (location) => {
     if (!origin) {
       setOrigin(location);
     } else if (!destination && location !== origin) {
       setDestination(location);
-      // Optionally, trigger the route calculation here if you want it to be automatic
-      // once the destination is set, or wait for a user action like pressing a "Generate Route" button.
     } else {
-      // Reset or handle additional clicks, depending on your app's needs.
-      // For example, to allow re-selecting origin and destination, you might:
       setOrigin(location);
-      setDestination(null); // Ready to select a new destination
+      setDestination(null);
     }
   };
-  const markers = locations.map((location) => ({
-    lat: location.lat,
-    lng: location.lng,
-  }));
-  const mapRef = useRef();
-  const directionsService = new google.maps.DirectionsService();
-  const [directions, setDirections] = useState(null);
-  const [legsInfo, setLegsInfo] = useState([]);
 
   useEffect(() => {
     if (!origin || !destination) return;
+
+    // Clear previous polylines from the map
+    polylines.forEach((polyline) => polyline.setMap(null));
+    setPolylines([]); // Reset the polylines state
+
     const waypoints = locations
       .filter((loc) => loc !== origin && loc !== destination)
       .map((location) => ({
@@ -55,16 +53,44 @@ const Map1 = () => {
         origin: { lat: origin.lat, lng: origin.lng },
         destination: { lat: destination.lat, lng: destination.lng },
         waypoints: waypoints,
-        travelMode: google.maps.TravelMode.DRIVING, // Or any other mode
-        optimizeWaypoints: true, // Optimize the route for the shortest distance
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true,
       },
       (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           setDirections(result);
-          const totalTime = result.routes[0].legs.reduce(
-            (total, leg) => total + leg.duration.value,
-            0
-          );
+          const newPolylines = []; // Temporary array to store new polylines
+
+          result.routes[0].legs.forEach((leg) => {
+            var legPath = leg.steps.reduce(
+              (acc, step) => acc.concat(step.path),
+              []
+            );
+            var polyline = new google.maps.Polyline({
+              path: legPath,
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.5,
+              strokeWeight: 4,
+              map: mapRef.current,
+            });
+
+            polyline.addListener("mouseover", function (e) {
+              polyline.setOptions({ strokeOpacity: 1.0 });
+              var infoWindow = new google.maps.InfoWindow({
+                content: "Duration: " + leg.duration.text,
+                position: e.latLng,
+              });
+              infoWindow.open(mapRef.current);
+              polyline.addListener("mouseout", function () {
+                polyline.setOptions({ strokeOpacity: 0.5 });
+                infoWindow.close();
+              });
+            });
+
+            newPolylines.push(polyline); // Add the new polyline to the temporary array
+          });
+
+          setPolylines(newPolylines); // Update the state with the new polylines
         } else {
           console.error(`error fetching directions ${result}`);
         }
@@ -72,71 +98,21 @@ const Map1 = () => {
     );
   }, [locations, origin, destination]);
 
-  useEffect(() => {
-    if (directions) {
-      const legs = directions.routes[0].legs;
-      const newLegsInfo = legs.map((leg, index) => ({
-        startAddress: leg.start_address,
-        endAddress: leg.end_address,
-        duration: leg.duration.text,
-        distance: leg.distance.text,
-        startLocation: {
-          lat: leg.start_location.lat(),
-          lng: leg.start_location.lng(),
-        }, // Modified
-        endLocation: {
-          lat: leg.end_location.lat(),
-          lng: leg.end_location.lng(),
-        }, // Modified
-        index,
-      }));
-      setLegsInfo(newLegsInfo);
-      console.log(newLegsInfo);
-    }
-  }, [directions]);
-
   return (
     <GoogleMap
       options={mapOptions}
       mapContainerStyle={{ width: "800px", height: "800px" }}
       center={locations[0]}
-      zoom={7}
+      zoom={10}
       mapTypeId={google.maps.MapTypeId.ROADMAP}
       onLoad={(map) => (mapRef.current = map)}
     >
-      {directions && (
-        <DirectionsRenderer
-          directions={directions}
-          options={{
-            suppressMarkers: true, // Prevent DirectionsRenderer from creating default markers
-          }}
-        />
-      )}
       {locations.map((location, index) => (
         <MarkerF
           key={index}
           position={{ lat: location.lat, lng: location.lng }}
           onClick={() => handleMarkerClick(location)}
-          onLoad={() => console.log("Marker Loaded")}
         />
-      ))}
-      {legsInfo.map((legInfo, index) => (
-        <InfoWindow
-          key={index}
-          position={{
-            lat: legInfo.startLocation.lat,
-            lng: legInfo.startLocation.lng,
-          }}
-          options={{ pixelOffset: new google.maps.Size(0, -30) }}
-        >
-          <div>
-            <h4>
-              Leg {index + 1}: {legInfo.startAddress} to {legInfo.endAddress}
-            </h4>
-            <p>Duration: {legInfo.duration}</p>
-            <p>Distance: {legInfo.distance}</p>
-          </div>
-        </InfoWindow>
       ))}
     </GoogleMap>
   );
