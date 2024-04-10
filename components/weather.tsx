@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useLocations } from "@/utils/locationContext";
 
-export default function Weather() {
+export default function Weather({ onSunrise, onSunset }) {
   const [date, setDate] = useState("");
   const { city } = useLocations();
   const [forecast, setForecast] = useState(null);
@@ -10,7 +10,6 @@ export default function Weather() {
 
   const fetchForecast = async (e) => {
     e.preventDefault();
-    console.log("lat and lng", lat, lng);
 
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     const apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lng}&dt=${date}`;
@@ -20,6 +19,9 @@ export default function Weather() {
       const data = await response.json();
       if (data && data.forecast && data.forecast.forecastday.length > 0) {
         setForecast(data.forecast.forecastday[0]);
+        onSunrise(data.forecast.forecastday[0].astro.sunrise);
+
+        onSunset(data.forecast.forecastday[0].astro.sunset);
       } else {
         setForecast(null);
         alert("Forecast not available for the selected date.");

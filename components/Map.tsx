@@ -4,7 +4,7 @@ import { useMemo, useEffect, useRef, useState } from "react";
 import { useLocations } from "@/utils/locationContext";
 import { InfoWindow } from "@react-google-maps/api";
 
-const Map = () => {
+const Map = ({ onStops }) => {
   const { locations } = useLocations();
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
@@ -61,8 +61,8 @@ const Map = () => {
         if (status === google.maps.DirectionsStatus.OK) {
           setDirections(result);
           const newPolylines = []; // Temporary array to store new polylines
-
           result.routes[0].legs.forEach((leg) => {
+            onStops(leg);
             var legPath = leg.steps.reduce(
               (acc, step) => acc.concat(step.path),
               []
