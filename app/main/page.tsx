@@ -12,7 +12,10 @@ const Main = () => {
   const [showItinerary, setShowItinerary] = useState(false);
 
   const handleStops = (stop) => {
-    setStops((currentStops) => [...currentStops, stop]);
+    setStops((currentStops) => [
+      ...currentStops,
+      { ...stop, stayDuration: 0 }, // Add stayTime initialized to 0 for each new stop
+    ]);
   };
   const handleSunrise = (time) => {
     setSunrise(time);
@@ -45,7 +48,12 @@ const Main = () => {
 
       {stops.length > 0 && (
         <Modal show={showItinerary} onClose={handleClose}>
-          <Itinerary stops={stops} sunRise={sunrise} sunSet={sunset} />
+          <Itinerary
+            stops={stops}
+            sunRise={sunrise}
+            sunSet={sunset}
+            setStops={setStops}
+          />
         </Modal>
       )}
     </div>

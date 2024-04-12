@@ -12,6 +12,7 @@ const LocationsInput = () => {
     const autocomplete = new google.maps.places.Autocomplete(atc, {
       bounds: circle.getBounds(), // Set the location bias using the circle bounds
     });
+    const placesService = new google.maps.places.PlacesService(atc);
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       // Handle the selected place data (e.g., place.name, place.geometry.location)
@@ -20,13 +21,25 @@ const LocationsInput = () => {
         return;
       }
       const { location } = place.geometry;
-      const placeDetails = {
-        name: place.name,
-        lat: location.lat(),
-        lng: location.lng(),
-      };
-      setInput(place.name);
-      setSelected(placeDetails);
+      placesService.getDetails(
+        {
+          placeId: place.place_id,
+          fields: ["name", "formatted_phone_number", "geometry", "website"],
+        },
+        (placeDetails, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            const detailedPlace = {
+              name: placeDetails.name,
+              lat: location.lat(),
+              lng: location.lng(),
+              phone: placeDetails.formatted_phone_number || "N/A", // Include phone number
+              website: placeDetails.website || "N/A",
+            };
+            setInput(placeDetails.name);
+            setSelected(detailedPlace);
+          }
+        }
+      );
     });
   }, [city]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

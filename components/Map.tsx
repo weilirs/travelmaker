@@ -6,6 +6,7 @@ import { InfoWindow } from "@react-google-maps/api";
 
 const Map = ({ onStops }) => {
   const { locations } = useLocations();
+  console.log(locations);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
