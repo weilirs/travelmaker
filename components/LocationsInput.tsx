@@ -1,9 +1,11 @@
 import { useLocations } from "@/utils/locationContext";
 import { useEffect, useState } from "react";
+
 const LocationsInput = () => {
   const { city, locations, setLocations } = useLocations();
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState(null);
+
   useEffect(() => {
     const atc = document.getElementById("autocomplete-input");
     const center = city.locationBias; // Center of the bias area

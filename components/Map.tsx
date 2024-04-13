@@ -13,6 +13,23 @@ const Map = ({ onStops }) => {
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
   const [travelMode, setTravelMode] = useState("DRIVING");
 
+  function findCustomName(lat, lng) {
+    let closestLocation = null;
+    let shortestDistance = Infinity;
+
+    locations.forEach((location) => {
+      const distance = Math.sqrt(
+        Math.pow(location.lat - lat, 2) + Math.pow(location.lng - lng, 2)
+      ); // Simple distance calculation
+      if (distance < shortestDistance) {
+        closestLocation = location;
+        shortestDistance = distance;
+      }
+    });
+
+    return closestLocation ? closestLocation.name : null;
+  }
+
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
@@ -63,6 +80,17 @@ const Map = ({ onStops }) => {
           setDirections(result);
           const newPolylines = []; // Temporary array to store new polylines
           result.routes[0].legs.forEach((leg) => {
+            const startName = findCustomName(
+              leg.start_location.lat(),
+              leg.start_location.lng()
+            );
+            const endName = findCustomName(
+              leg.end_location.lat(),
+              leg.end_location.lng()
+            );
+            leg.start_address = startName || leg.start_address;
+            leg.end_address = endName || leg.end_address;
+            console.log(leg);
             onStops(leg);
             var legPath = leg.steps.reduce(
               (acc, step) => acc.concat(step.path),

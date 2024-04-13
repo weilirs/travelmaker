@@ -48,26 +48,39 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
   };
 
   return (
-    <div>
+    <div className="bg-white p-6 rounded-lg  mx-auto my-8 ">
       <p>{sunRise && `Sunrise: ${sunRise}`}</p>
-      <label htmlFor="appt-time">Choose a departure time:</label>
-      <input
-        type="time"
-        id="appt-time"
-        name="appt-time"
-        onChange={(e) => setDepartureTime(e.target.value)}
-      ></input>
+      <div className="flex justify-between items-center my-4">
+        {" "}
+        {/* Flex container */}
+        <p className="text-sm text-gray-700">{stops[0]?.start_address}</p>{" "}
+        {/* Assuming the first stop is the departure location */}
+        <div>
+          <label
+            htmlFor="appt-time"
+            className="block text-sm font-medium text-gray-700"
+          >
+            departure time:
+          </label>
+          <input
+            className="p-2.5 w-30 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500  placeholder-blue-500"
+            type="time"
+            id="appt-time"
+            name="appt-time"
+            onChange={(e) => setDepartureTime(e.target.value)}
+          />
+        </div>
+      </div>
       {itinerary.map((stop, index) => (
-        <div key={index}>
-          {index === 0 && <p>Departure: {stop.start_address}</p>}
-          <p>Arrival: {stop.end_address}</p>
-          <p>Arrival Time: {stop.arrivalTime}</p>
-          {index < itinerary.length - 1 && ( // Only render stay duration input if it's not the last stop
+        <div key={index} className="my-4 bg-[#E2D6FF] rounded-lg">
+          <p>{stop.arrivalTime}</p>
+          <p>{stop.end_address}</p>
+
+          {index < itinerary.length - 1 && (
             <>
-              <label htmlFor={`stay-duration-${index}`}>
-                Stay Duration (minutes):{" "}
-              </label>
+              <label htmlFor={`stay-duration-${index}`}>Stay For(mins):</label>
               <input
+                className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500 focus:w-30 placeholder-blue-500"
                 type="number"
                 id={`stay-duration-${index}`}
                 value={(stop.stayDuration || 0) / 60} // Convert seconds to minutes for display
