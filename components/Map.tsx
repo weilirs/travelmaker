@@ -12,6 +12,7 @@ const Map = ({ onStops }) => {
   const [directions, setDirections] = useState(null);
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
   const [travelMode, setTravelMode] = useState("DRIVING");
+  const urlRef = useRef();
 
   function findCustomName(lat, lng) {
     let closestLocation = null;
@@ -28,6 +29,16 @@ const Map = ({ onStops }) => {
     });
 
     return closestLocation ? closestLocation.name : null;
+  }
+
+  function createGoogleMapsUrl(origin, destination, waypoints) {
+    let baseUrl = "https://www.google.com/maps/dir/?api=1";
+    let originParam = `origin=${origin.lat},${origin.lng}`;
+    let destinationParam = `destination=${destination.lat},${destination.lng}`;
+    let waypointsParam = waypoints
+      .map((wp) => `${wp.location.lat},${wp.location.lng}`)
+      .join("|");
+    return `${baseUrl}&${originParam}&${destinationParam}&waypoints=${waypointsParam}`;
   }
 
   const mapOptions = useMemo(
@@ -66,6 +77,7 @@ const Map = ({ onStops }) => {
         location: { lat: location.lat, lng: location.lng },
         stopover: true,
       }));
+    urlRef.current = createGoogleMapsUrl(origin, destination, waypoints);
 
     directionsService.route(
       {
@@ -155,6 +167,9 @@ const Map = ({ onStops }) => {
           />
         ))}
       </GoogleMap>
+      <a href={urlRef.current} target="_blank" rel="noopener noreferrer">
+        Open in Google Maps
+      </a>
     </div>
   );
 };

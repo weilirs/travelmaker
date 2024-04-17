@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const calculateArrivalTimes = (departureTime, stops) => {
   const baseTime = new Date();
@@ -27,6 +29,19 @@ const calculateArrivalTimes = (departureTime, stops) => {
   });
 };
 
+const handleDownloadPDF = () => {
+  const input = document.getElementById("itinerary-content"); // The id of the div you want to convert to PDF
+  html2canvas(input, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height],
+    });
+    pdf.addImage(imgData, "PNG", 0, 0);
+    pdf.save("itinerary.pdf"); // Name of the downloaded PDF file
+  });
+};
 const Itinerary = ({ stops, sunRise, sunSet }) => {
   const [departureTime, setDepartureTime] = useState(null);
   const [adjustedStops, setAdjustedStops] = useState(stops);
@@ -48,52 +63,69 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg  mx-auto my-8 ">
-      <p>{sunRise && `Sunrise: ${sunRise}`}</p>
-      <div className="flex justify-between items-center my-4">
-        {" "}
-        {/* Flex container */}
-        <p className="text-sm text-gray-700">{stops[0]?.start_address}</p>{" "}
-        {/* Assuming the first stop is the departure location */}
-        <div>
-          <label
-            htmlFor="appt-time"
-            className="block text-sm font-medium text-gray-700"
-          >
-            departure time:
-          </label>
-          <input
-            className="p-2.5 w-30 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500  placeholder-blue-500"
-            type="time"
-            id="appt-time"
-            name="appt-time"
-            onChange={(e) => setDepartureTime(e.target.value)}
-          />
+    <div>
+      <div className=" p-6 rounded-lg  mx-auto my-8  " id="itinerary-content">
+        <p>{sunRise && `Sunrise: ${sunRise}`}</p>
+        <div className="flex justify-between items-center my-4">
+          {" "}
+          {/* Flex container */}
+          <p className=" text-gray-700 bg-[#faedcd] rounded-lg p-6 mr-4 ">
+            {stops[0]?.start_address}
+          </p>{" "}
+          {/* Assuming the first stop is the departure location */}
+          <div>
+            <label
+              htmlFor="appt-time"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Departure Time:
+            </label>
+            <input
+              className="p-2 w-30 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-[#faedcd]  placeholder-[#faedcd] bg-[#faedcd]"
+              type="time"
+              id="appt-time"
+              name="appt-time"
+              onChange={(e) => setDepartureTime(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      {itinerary.map((stop, index) => (
-        <div key={index} className="my-4 bg-[#E2D6FF] rounded-lg">
-          <p>{stop.arrivalTime}</p>
-          <p>{stop.end_address}</p>
+        {itinerary.map((stop, index) => (
+          <div key={index} className="flex justify-between items-center">
+            <div className="my-4 mr-4 py-4 pr-20 max-w-full bg-[#faedcd] rounded-lg  text-gray-700 ">
+              <p>{stop.arrivalTime}</p>
+              <p>{stop.end_address}</p>
+            </div>
 
-          {index < itinerary.length - 1 && (
-            <>
-              <label htmlFor={`stay-duration-${index}`}>Stay For(mins):</label>
-              <input
-                className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500 focus:w-30 placeholder-blue-500"
-                type="number"
-                id={`stay-duration-${index}`}
-                value={(stop.stayDuration || 0) / 60} // Convert seconds to minutes for display
-                onChange={(e) =>
-                  handleStayDurationChange(index, e.target.value)
-                }
-                min="0"
-              />
-            </>
-          )}
-        </div>
-      ))}
-      <p>{sunSet && `Sunset: ${sunSet}`}</p>
+            {index < itinerary.length - 1 && (
+              <div className="flex-column justify-between items-center ">
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor={`stay-duration-${index}`}
+                >
+                  Stay For(mins):
+                </label>
+                <input
+                  className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 bg-[#faedcd]"
+                  type="number"
+                  id={`stay-duration-${index}`}
+                  value={(stop.stayDuration || 0) / 60} // Convert seconds to minutes for display
+                  onChange={(e) =>
+                    handleStayDurationChange(index, e.target.value)
+                  }
+                  min="0"
+                />
+              </div>
+            )}
+          </div>
+        ))}
+        <p>{sunSet && `Sunset: ${sunSet}`}</p>
+      </div>
+      <button
+        onClick={handleDownloadPDF}
+        className="p-2 bg-blue-500 text-white rounded-lg"
+      >
+        Download as PDF
+      </button>
     </div>
   );
 };

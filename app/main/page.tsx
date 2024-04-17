@@ -47,14 +47,16 @@ const Main = () => {
       </button>
 
       {stops.length > 0 && (
-        <Modal show={showItinerary} onClose={handleClose}>
-          <Itinerary
-            stops={stops}
-            sunRise={sunrise}
-            sunSet={sunset}
-            setStops={setStops}
-          />
-        </Modal>
+        <div>
+          <Modal show={showItinerary} onClose={handleClose}>
+            <Itinerary
+              stops={stops}
+              sunRise={sunrise}
+              sunSet={sunset}
+              setStops={setStops}
+            />
+          </Modal>
+        </div>
       )}
     </div>
   );
