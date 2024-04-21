@@ -69,7 +69,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
         <div className="flex justify-between items-center my-4">
           {" "}
           {/* Flex container */}
-          <p className=" text-gray-700 bg-[#faedcd] rounded-lg p-6 mr-4 ">
+          <p className=" text-gray-700 bg-[#faedcd] rounded-lg pl-4 py-6 mr-4 w-240 font-bold">
             {stops[0]?.start_address}
           </p>{" "}
           {/* Assuming the first stop is the departure location */}
@@ -91,8 +91,8 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
         </div>
         {itinerary.map((stop, index) => (
           <div key={index} className="flex justify-between items-center">
-            <div className="my-4 mr-4 py-4 pr-20 max-w-full bg-[#faedcd] rounded-lg  text-gray-700 ">
-              <p>{stop.arrivalTime}</p>
+            <div className="my-4 mr-4 py-4 pl-4 max-w-full bg-[#faedcd] rounded-lg  text-gray-700 w-240 font-bold">
+              <p>Arrive at: {stop.arrivalTime}</p>
               <p>{stop.end_address}</p>
             </div>
 
@@ -108,7 +108,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
                   className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 bg-[#faedcd]"
                   type="number"
                   id={`stay-duration-${index}`}
-                  value={(stop.stayDuration || 0) / 60} // Convert seconds to minutes for display
+                  value={(stop.stayDuration || 0) / 60 || ""} // Convert seconds to minutes for display
                   onChange={(e) =>
                     handleStayDurationChange(index, e.target.value)
                   }
