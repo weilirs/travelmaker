@@ -69,19 +69,19 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
         <div className="flex justify-between items-center my-4">
           {" "}
           {/* Flex container */}
-          <p className=" text-[#023047] bg-[#fb8500] rounded-lg pl-4 py-6 mr-4 w-240 font-bold">
+          <p className=" text-gray-700 bg-[#faedcd] rounded-lg pl-4 py-6 mr-4 w-240 font-bold">
             {stops[0]?.start_address}
           </p>{" "}
           {/* Assuming the first stop is the departure location */}
           <div>
             <label
               htmlFor="appt-time"
-              className="block text-sm font-medium text-[#023047] mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Departure Time:
             </label>
             <input
-              className="p-2 w-30 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-[#fb8500]  placeholder-[#fb8500] bg-[#fb8500]"
+              className="p-2 w-30 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 focus:ring-[#faedcd]  placeholder-[#faedcd] bg-[#faedcd]"
               type="time"
               id="appt-time"
               name="appt-time"
@@ -91,7 +91,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
         </div>
         {itinerary.map((stop, index) => (
           <div key={index} className="flex justify-between items-center">
-            <div className="my-4 mr-4 py-4 pl-4 max-w-full bg-[#fb8500] rounded-lg  text-[#023047] w-240 font-bold">
+            <div className="my-4 mr-4 py-4 pl-4 max-w-full bg-[#faedcd] rounded-lg  text-gray-700 w-240 font-bold">
               <p>Arrive at: {stop.arrivalTime}</p>
               <p>{stop.end_address}</p>
             </div>
@@ -105,7 +105,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
                   Stay For(mins):
                 </label>
                 <input
-                  className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 bg-[#fb8500]"
+                  className="p-2.5 w-20 border-none rounded-md shadow-sm text-lg transition-all duration-300 font-mono focus:outline-none focus:ring-1 bg-[#faedcd]"
                   type="number"
                   id={`stay-duration-${index}`}
                   value={(stop.stayDuration || 0) / 60 || ""} // Convert seconds to minutes for display
@@ -122,7 +122,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
       </div>
       <button
         onClick={handleDownloadPDF}
-        className="p-2 bg-[#219ebc] text-[#023047] rounded-lg font-bold"
+        className="p-2 bg-blue-500 text-white rounded-lg"
       >
         Download as PDF
       </button>
