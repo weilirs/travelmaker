@@ -42,7 +42,12 @@ export default function Weather({ onSunrise, onSunset }) {
           onChange={(e) => setDate(e.target.value)}
           required
         />
-        <button type="submit">Get Forecast</button>
+        <button
+          type="submit"
+          className="bg-[#e9edc9] text-gray font-bold py-2 px-4 rounded"
+        >
+          Get Forecast
+        </button>
       </form>
       {forecast && (
         <div>

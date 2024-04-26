@@ -167,7 +167,12 @@ const Map = ({ onStops }) => {
           />
         ))}
       </GoogleMap>
-      <a href={urlRef.current} target="_blank" rel="noopener noreferrer">
+      <a
+        href={urlRef.current}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
+      >
         Open in Google Maps
       </a>
     </div>

@@ -9,7 +9,7 @@ const Modal = ({ show, onClose, children }) => {
         {children}
         <button
           onClick={onClose}
-          className="mt-4 bg-[#e9edc9] hover:bg-[#faedcd] text-gray font-bold py-2 px-4 rounded"
+          className="mt-4 bg-[#d4a373] hover:bg-[#faedcd] text-gray font-bold py-2 px-4 rounded"
         >
           Close
         </button>

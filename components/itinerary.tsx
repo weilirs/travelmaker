@@ -122,7 +122,7 @@ const Itinerary = ({ stops, sunRise, sunSet }) => {
       </div>
       <button
         onClick={handleDownloadPDF}
-        className="p-2 bg-blue-500 text-white rounded-lg"
+        className="p-2 bg-[#e9edc9] text-gray rounded-lg font-bold"
       >
         Download as PDF
       </button>

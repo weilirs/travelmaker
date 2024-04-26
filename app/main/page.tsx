@@ -35,13 +35,11 @@ const Main = () => {
     setShowItinerary(false);
   };
   return (
-    <div>
-      <h1>TravelMaker</h1>
-      <Weather onSunrise={handleSunrise} onSunset={handleSunset} />
+    <div className="flex ">
       <Map onStops={handleStops} />
       <button
         onClick={handleShowItinerary}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
       >
         Generate Itinerary
       </button>
@@ -58,6 +56,7 @@ const Main = () => {
           </Modal>
         </div>
       )}
+      <Weather onSunrise={handleSunrise} onSunset={handleSunset} />
     </div>
   );
 };

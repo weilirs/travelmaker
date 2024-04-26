@@ -34,7 +34,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-screen items-center justify-center">
       <h1>TravelMaker</h1>
       {Object.keys(city).length === 0 ? <CityInput /> : <LocationsInput />}
 
@@ -42,7 +42,7 @@ const Dashboard = () => {
         <EntryCard key={index} entry={entry} />
       ))}
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-[#ccd5ae] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded ml-4"
         onClick={handleGenerateClick}
       >
         Generate

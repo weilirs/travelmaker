@@ -68,14 +68,14 @@ const CityInput = () => {
     <div>
       <input
         placeholder="Enter a city"
-        className="border border-gray-300 p-2"
+        className="border border-gray-300 p-2 mr-4"
         type="text"
         onChange={handleChange}
         value={input}
       />
       {status === "OK" && <ul>{renderSuggestions()}</ul>}
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
         onClick={handleSaveClick}
       >
         Save City
