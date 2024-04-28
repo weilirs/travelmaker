@@ -1,85 +1,63 @@
 import { useLocations } from "@/utils/locationContext";
-import { useState } from "react";
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
+import { useState, useEffect } from "react";
 
 const CityInput = () => {
   const { city, setCity } = useLocations(); // Use context
   const [input, setInput] = useState("");
-
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    callbackName: "YOUR_CALLBACK_NAME",
-    requestOptions: {
-      /* Define search scope here */
-    },
-    debounce: 300,
-  });
-
-  const handleSelect =
-    ({ description }) =>
-    () => {
-      // When the user selects a place, we can replace the keyword without request data from API
-      // by setting the second parameter to "false"
-      setInput(description);
-
-      setValue(description, false);
-      clearSuggestions();
-    };
-
-  const renderSuggestions = () =>
-    data.map((suggestion) => {
-      const {
-        place_id,
-        structured_formatting: { main_text, secondary_text },
-      } = suggestion;
-
-      return (
-        <li key={place_id} onClick={handleSelect(suggestion)}>
-          <strong>{main_text}</strong> <small>{secondary_text}</small>
-        </li>
-      );
+  const [location, setLocation] = useState(null);
+  const autocomplete = () => {
+    const atc = document.getElementById("autocomplete-input");
+    const autocomplete = new google.maps.places.Autocomplete(atc, {});
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      // Handle the selected place data (e.g., place.name, place.geometry.location)
+      if (!place.geometry) {
+        console.log("Returned place contains no geometry");
+        return;
+      }
+      setLocation(place.geometry);
+      setInput(place.name);
     });
-
+  };
+  useEffect(() => {
+    autocomplete();
+  }, []);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInput(newValue);
-    setValue(newValue);
   };
 
   const handleSaveClick = () => {
-    getGeocode({ address: input }).then((results) => {
-      const { lat, lng } = getLatLng(results[0]);
-      const bounds = results[0].geometry.bounds;
+    if (input && location) {
+      // Ensure 'location' is also defined
       setCity({
         name: input,
-        locationBias: { lat, lng },
+        locationBias: {
+          lat: location.lat, // Correctly define the property name
+          lng: location.lng, // Correctly define the property name
+        },
       });
-    });
+      setInput("");
+    }
   };
   return (
     <div>
-      <input
-        placeholder="Enter a city"
-        className="border border-gray-300 p-2 mr-4"
-        type="text"
-        onChange={handleChange}
-        value={input}
-      />
-      {status === "OK" && <ul>{renderSuggestions()}</ul>}
-      <button
-        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
-        onClick={handleSaveClick}
-      >
-        Save City
-      </button>
+      <div className="flex items-center space-x-4">
+        <input
+          placeholder="Enter a city"
+          className="border border-gray-300 p-2 rounded w-full"
+          type="text"
+          onChange={handleChange}
+          value={input}
+          id="autocomplete-input"
+        />
+        <button
+          className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded whitespace-nowrap"
+          onClick={handleSaveClick}
+        >
+          Save City
+        </button>
+      </div>
     </div>
   );
 };
