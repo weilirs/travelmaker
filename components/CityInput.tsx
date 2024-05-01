@@ -45,7 +45,7 @@ const CityInput = () => {
       <div className="flex items-center space-x-4">
         <input
           placeholder="Enter a city"
-          className="border border-gray-300 p-2 rounded w-full"
+          className="border border-gray-300 p-2 rounded "
           type="text"
           onChange={handleChange}
           value={input}
