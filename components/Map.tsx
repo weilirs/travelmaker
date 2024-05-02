@@ -153,7 +153,7 @@ const Map = ({ onStops }) => {
       </select>
       <GoogleMap
         options={mapOptions}
-        mapContainerStyle={{ width: "800px", height: "800px" }}
+        mapContainerStyle={{ width: "100%", height: "800px" }}
         center={locations[0]}
         zoom={10}
         mapTypeId={google.maps.MapTypeId.ROADMAP}

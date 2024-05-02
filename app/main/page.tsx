@@ -35,28 +35,33 @@ const Main = () => {
     setShowItinerary(false);
   };
   return (
-    <div className="flex ">
-      <Map onStops={handleStops} />
-      <button
-        onClick={handleShowItinerary}
-        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
-      >
-        Generate Itinerary
-      </button>
+    <div className="grid grid-cols-[3fr_1fr]">
+      <div className="w-full">
+        <Map onStops={handleStops} />
+      </div>
 
-      {stops.length > 0 && (
-        <div>
-          <Modal show={showItinerary} onClose={handleClose}>
-            <Itinerary
-              stops={stops}
-              sunRise={sunrise}
-              sunSet={sunset}
-              setStops={setStops}
-            />
-          </Modal>
-        </div>
-      )}
-      <Weather onSunrise={handleSunrise} onSunset={handleSunset} />
+      <div className="w-full">
+        <button
+          onClick={handleShowItinerary}
+          className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4 self-center"
+        >
+          Generate Itinerary
+        </button>
+
+        {stops.length > 0 && (
+          <div>
+            <Modal show={showItinerary} onClose={handleClose}>
+              <Itinerary
+                stops={stops}
+                sunRise={sunrise}
+                sunSet={sunset}
+                setStops={setStops}
+              />
+            </Modal>
+          </div>
+        )}
+        <Weather onSunrise={handleSunrise} onSunset={handleSunset} />
+      </div>
     </div>
   );
 };
