@@ -11,7 +11,6 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
-  const urlRef = useRef();
 
   function findCustomName(lat, lng) {
     let closestLocation = null;

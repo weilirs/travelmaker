@@ -6,6 +6,7 @@ export default function Weather({ onSunrise, onSunset }) {
   const [date, setDate] = useState("");
   const { city } = useLocations();
   const [forecast, setForecast] = useState(null);
+  console.log(city);
   const { lat, lng } = city.locationBias;
 
   const fetchForecast = async (e) => {

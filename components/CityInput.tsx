@@ -15,7 +15,12 @@ const CityInput = () => {
         console.log("Returned place contains no geometry");
         return;
       }
-      setLocation(place.geometry);
+      const latitude = place.geometry.location.lat(); // Get latitude
+      const longitude = place.geometry.location.lng(); // Get longitude
+      setLocation({
+        lat: latitude,
+        lng: longitude,
+      });
       setInput(place.name);
     });
   };
@@ -33,10 +38,11 @@ const CityInput = () => {
       setCity({
         name: input,
         locationBias: {
-          lat: location.lat, // Correctly define the property name
-          lng: location.lng, // Correctly define the property name
+          lat: location.lat, // Use the lat property from location state
+          lng: location.lng, // Use the lng property from location state
         },
       });
+      console.log(city.locationBias);
       setInput("");
     }
   };

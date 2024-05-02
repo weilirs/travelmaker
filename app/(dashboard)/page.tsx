@@ -13,20 +13,16 @@ const Dashboard = () => {
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState([]);
   const [resetTrigger, setResetTrigger] = useState(false);
-  const { locations, city, setCity, setLocations } = useLocations(); // Use context
+  const {
+    locations,
+    city,
+    setCity,
+    setLocations,
+    isMapsLoaded,
+    mapsLoadError,
+  } = useLocations(); // Use context
 
   const router = useRouter();
-
-  const libraries = useMemo(() => ["places"], []);
-
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
-    libraries: libraries as any,
-  });
-
-  if (!isLoaded) {
-    return <p>Loading...</p>;
-  }
 
   function findCustomName(lat, lng) {
     let closestLocation = null;
@@ -52,6 +48,14 @@ const Dashboard = () => {
     const newLocations = locations.filter((_, locIndex) => locIndex !== index);
     setLocations(newLocations);
   };
+
+  if (!isMapsLoaded) {
+    return <p>Loading...</p>; // Show loading message until the API is loaded
+  }
+
+  if (mapsLoadError) {
+    return <p>Error loading maps: {mapsLoadError.message}</p>; // Display any errors
+  }
   const handleGenerateClick = () => {
     // Navigate to the map page when Generate is clicked
     router.push("/main");
