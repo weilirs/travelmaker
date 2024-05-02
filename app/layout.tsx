@@ -16,9 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full min-h-screen">
       <LocationProvider>
-        <body className={`${inter.className} bg-[#faedcd]`}>{children}</body>
+        <body className={`${inter.className} bg-[#faedcd] h-full`}>
+          {children}
+        </body>
       </LocationProvider>
     </html>
   );

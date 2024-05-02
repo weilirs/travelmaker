@@ -4,14 +4,13 @@ import { useMemo, useEffect, useRef, useState } from "react";
 import { useLocations } from "@/utils/locationContext";
 import { InfoWindow } from "@react-google-maps/api";
 
-const Map = ({ onStops }) => {
+const Map = ({ onStops, travelMode, onUrlChange }) => {
   const { locations } = useLocations();
   console.log(locations);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
-  const [travelMode, setTravelMode] = useState("DRIVING");
   const urlRef = useRef();
 
   function findCustomName(lat, lng) {
@@ -77,7 +76,8 @@ const Map = ({ onStops }) => {
         location: { lat: location.lat, lng: location.lng },
         stopover: true,
       }));
-    urlRef.current = createGoogleMapsUrl(origin, destination, waypoints);
+    const url = createGoogleMapsUrl(origin, destination, waypoints);
+    onUrlChange(url); // Update URL in Main component
 
     directionsService.route(
       {
@@ -142,18 +142,9 @@ const Map = ({ onStops }) => {
 
   return (
     <div>
-      <select
-        value={travelMode}
-        onChange={(e) => setTravelMode(e.target.value)}
-      >
-        <option value="DRIVING">Driving</option>
-        <option value="WALKING">Walking</option>
-        <option value="BICYCLING">Bicycling</option>
-        <option value="TRANSIT">Transit</option>
-      </select>
       <GoogleMap
         options={mapOptions}
-        mapContainerStyle={{ width: "100%", height: "800px" }}
+        mapContainerStyle={{ width: "100%", height: "850px" }} // TODO: set height to 100%
         center={locations[0]}
         zoom={10}
         mapTypeId={google.maps.MapTypeId.ROADMAP}
@@ -167,14 +158,6 @@ const Map = ({ onStops }) => {
           />
         ))}
       </GoogleMap>
-      <a
-        href={urlRef.current}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded"
-      >
-        Open in Google Maps
-      </a>
     </div>
   );
 };
