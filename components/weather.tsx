@@ -42,6 +42,7 @@ export default function Weather({ onSunrise, onSunset }) {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           required
+          className="border border-gray-300 p-2 mr-4 rounded"
         />
         <button
           type="submit"

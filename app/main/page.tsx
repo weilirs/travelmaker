@@ -70,16 +70,18 @@ const Main = () => {
       </div>
       <div className="w-full flex flex-col items-center justify-start mt-5">
         <Weather onSunrise={handleSunrise} onSunset={handleSunset} />
-        <select
-          value={travelMode}
-          onChange={(e) => setTravelMode(e.target.value)}
-          className="mt-4"
-        >
-          <option value="DRIVING">Driving</option>
-          <option value="WALKING">Walking</option>
-          <option value="BICYCLING">Bicycling</option>
-          <option value="TRANSIT">Transit</option>
-        </select>
+        <div className="mt-4">
+          <p>Travel Mode</p>
+          <select
+            value={travelMode}
+            onChange={(e) => setTravelMode(e.target.value)}
+          >
+            <option value="DRIVING">Driving</option>
+            <option value="WALKING">Walking</option>
+            <option value="BICYCLING">Bicycling</option>
+            <option value="TRANSIT">Transit</option>
+          </select>
+        </div>
         <button
           onClick={handleOpenMap}
           className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4"
