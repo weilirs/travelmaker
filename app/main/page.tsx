@@ -47,6 +47,14 @@ const Main = () => {
     setShowItinerary(false);
   };
 
+  const handleOpenMap = () => {
+    if (!mapUrl) {
+      alert("Click on the map to select origin and destination.");
+    } else {
+      window.open(mapUrl, "_blank");
+    }
+  };
+
   const handleMapUrlChange = (url) => {
     setMapUrl(url); // Update the URL when it changes in the Map component
   };
@@ -72,14 +80,12 @@ const Main = () => {
           <option value="BICYCLING">Bicycling</option>
           <option value="TRANSIT">Transit</option>
         </select>
-        <a
-          href={mapUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={handleOpenMap}
           className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4"
         >
           Open in Google Maps
-        </a>
+        </button>
         <button
           onClick={handleShowItinerary}
           className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4 self-center"

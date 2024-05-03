@@ -61,6 +61,7 @@ const Dashboard = () => {
     router.push("/main");
   };
 
+  // TODO: fixate the elements on the page
   return (
     <div className="flex flex-col h-screen items-center justify-center">
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-[#a4c3b2] md:text-5xl lg:text-6xl dark:text-white">
