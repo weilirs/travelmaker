@@ -1,8 +1,12 @@
 "use client";
-import { GoogleMap, MarkerF, DirectionsRenderer } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  MarkerF,
+  DirectionsRenderer,
+  InfoWindow,
+} from "@react-google-maps/api";
 import { useMemo, useEffect, useRef, useState } from "react";
 import { useLocations } from "@/utils/locationContext";
-import { InfoWindow } from "@react-google-maps/api";
 
 const Map = ({ onStops, travelMode, onUrlChange }) => {
   const { locations } = useLocations();
@@ -11,6 +15,10 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
   const [polylines, setPolylines] = useState([]); // State to keep track of polylines
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [infoPosition, setInfoPosition] = useState(null);
+  const hoverTimeoutRef = useRef(null);
 
   function findCustomName(lat, lng) {
     let closestLocation = null;
@@ -47,6 +55,31 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
     }),
     []
   );
+
+  const handleMouseOver = (location) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setSelectedPlace(location);
+    setInfoPosition({ lat: location.lat + 0.05, lng: location.lng });
+    setInfoOpen(true);
+  };
+
+  const handleMouseOut = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setInfoOpen(false);
+    }, 100); // Adjust delay as needed
+  };
+
+  // Remember to clear the timeout if the component unmounts
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const mapRef = useRef();
   const directionsService = new google.maps.DirectionsService();
@@ -154,8 +187,22 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
             key={index}
             position={{ lat: location.lat, lng: location.lng }}
             onClick={() => handleMarkerClick(location)}
+            onMouseOver={() => handleMouseOver(location)}
+            onMouseOut={handleMouseOut}
           />
         ))}
+        {infoOpen && (
+          <InfoWindow
+            position={infoPosition}
+            onCloseClick={() => setInfoOpen(false)}
+          >
+            <div>
+              <h3>{selectedPlace.name}</h3>
+              <p>{selectedPlace.description}</p>{" "}
+              {/* Additional details can be added here */}
+            </div>
+          </InfoWindow>
+        )}
       </GoogleMap>
     </div>
   );
