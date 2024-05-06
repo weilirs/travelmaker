@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 import { useMemo, useEffect, useRef, useState } from "react";
 import { useLocations } from "@/utils/locationContext";
+import { url } from "inspector";
 
 const Map = ({ onStops, travelMode, onUrlChange }) => {
   const { locations } = useLocations();
@@ -62,7 +63,7 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
       hoverTimeoutRef.current = null;
     }
     setSelectedPlace(location);
-    setInfoPosition({ lat: location.lat + 0.05, lng: location.lng });
+    setInfoPosition({ lat: location.lat + 0.03, lng: location.lng }); // TODO: when zoom in the map, the info window will be shown in the wrong place
     setInfoOpen(true);
   };
 
@@ -182,15 +183,28 @@ const Map = ({ onStops, travelMode, onUrlChange }) => {
         mapTypeId={google.maps.MapTypeId.ROADMAP}
         onLoad={(map) => (mapRef.current = map)}
       >
-        {locations.map((location, index) => (
-          <MarkerF
-            key={index}
-            position={{ lat: location.lat, lng: location.lng }}
-            onClick={() => handleMarkerClick(location)}
-            onMouseOver={() => handleMouseOver(location)}
-            onMouseOut={handleMouseOut}
-          />
-        ))}
+        {locations.map((location, index) => {
+          // Determine the icon based on whether the location is the origin or destination
+          let iconUrl = "http://maps.google.com/mapfiles/ms/icons/red-dot.png"; // Default icon
+          if (origin && location === origin) {
+            iconUrl = "http://maps.google.com/mapfiles/ms/icons/green-dot.png"; // Origin icon
+          } else if (destination && location === destination) {
+            iconUrl = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"; // Destination icon
+          }
+
+          return (
+            <MarkerF
+              key={index}
+              position={{ lat: location.lat, lng: location.lng }}
+              onClick={() => handleMarkerClick(location)}
+              onMouseOver={() => handleMouseOver(location)}
+              onMouseOut={handleMouseOut}
+              icon={{
+                url: iconUrl,
+              }}
+            />
+          );
+        })}
         {infoOpen && (
           <InfoWindow
             position={infoPosition}
