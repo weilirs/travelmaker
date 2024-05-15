@@ -11,7 +11,7 @@ import { url } from "inspector";
 
 const Map = ({ onStops, travelMode, onUrlChange }) => {
   const { locations } = useLocations();
-  console.log(locations);
+  // console.log(locations);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [directions, setDirections] = useState(null);
