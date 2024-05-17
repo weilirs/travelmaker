@@ -1,8 +1,8 @@
-import { useLocations } from "@/utils/locationContext";
+import { useInfo } from "@/utils/lnfoContext";
 import { useEffect, useState } from "react";
 
 const LocationsInput = () => {
-  const { city, locations, setLocations } = useLocations();
+  const { city, locations, setLocations } = useInfo();
   const [input, setInput] = useState("");
   const [selected, setSelected] = useState(null);
 

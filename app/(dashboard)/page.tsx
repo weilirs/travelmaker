@@ -5,7 +5,7 @@ import LocationsInput from "@/components/LocationsInput";
 import EntryCard from "@/components/EntryCard";
 import exp from "constants";
 import React, { useState, useMemo } from "react";
-import { useLocations } from "@/utils/locationContext";
+import { useInfo } from "@/utils/lnfoContext";
 import { useRouter } from "next/navigation";
 import { useLoadScript } from "@react-google-maps/api";
 
@@ -20,7 +20,9 @@ const Dashboard = () => {
     setLocations,
     isMapsLoaded,
     mapsLoadError,
-  } = useLocations(); // Use context
+    date,
+    setDate,
+  } = useInfo(); // Use context
 
   const router = useRouter();
 
@@ -71,6 +73,12 @@ const Dashboard = () => {
       {entries.map((entry, index) => (
         <EntryCard key={index} entry={entry} />
       ))}
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="border border-gray-300 p-2 mr-4 rounded"
+      />
       <button
         className="bg-[#ccd5ae] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4"
         onClick={handleGenerateClick}

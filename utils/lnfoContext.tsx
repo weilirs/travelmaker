@@ -2,13 +2,14 @@
 import React, { createContext, useContext, useState } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 
-const LocationContext = createContext();
+const InfoContext = createContext();
 
-export const useLocations = () => useContext(LocationContext);
+export const useInfo = () => useContext(InfoContext);
 
-export const LocationProvider = ({ children }) => {
+export const InfoProvider = ({ children }) => {
   const [city, setCity] = useState({});
   const [locations, setLocations] = useState([]);
+  const [date, setDate] = useState(null);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -22,11 +23,11 @@ export const LocationProvider = ({ children }) => {
     setCity,
     isMapsLoaded: isLoaded,
     mapsLoadError: loadError,
+    date,
+    setDate,
   };
 
   return (
-    <LocationContext.Provider value={contextValue}>
-      {children}
-    </LocationContext.Provider>
+    <InfoContext.Provider value={contextValue}>{children}</InfoContext.Provider>
   );
 };

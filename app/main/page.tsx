@@ -4,7 +4,7 @@ import Map from "@/components/Map";
 import Weather from "@/components/weather";
 import Itinerary from "@/components/itinerary";
 import Modal from "@/components/modal";
-import { useLocations } from "@/utils/locationContext";
+import { useInfo } from "@/utils/lnfoContext";
 
 const Main = () => {
   const [stops, setStops] = useState([]);
@@ -13,7 +13,7 @@ const Main = () => {
   const [showItinerary, setShowItinerary] = useState(false);
   const [travelMode, setTravelMode] = useState("DRIVING"); // Moved state up to Main
   const [mapUrl, setMapUrl] = useState(""); // State for storing the URL
-  const { isMapsLoaded, mapsLoadError, city } = useLocations();
+  const { isMapsLoaded, mapsLoadError, city } = useInfo();
 
   if (!isMapsLoaded) {
     return <p>Loading...</p>; // Show loading message until the API is loaded

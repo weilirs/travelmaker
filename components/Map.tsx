@@ -6,11 +6,11 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import { useMemo, useEffect, useRef, useState } from "react";
-import { useLocations } from "@/utils/locationContext";
+import { useInfo } from "@/utils/lnfoContext";
 import { url } from "inspector";
 
 const Map = ({ onStops, travelMode, onUrlChange }) => {
-  const { locations } = useLocations();
+  const { locations } = useInfo();
   console.log(locations);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);

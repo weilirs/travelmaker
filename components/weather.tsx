@@ -1,18 +1,14 @@
 "use client";
-import { useState } from "react";
-import { useLocations } from "@/utils/locationContext";
+import { useState, useEffect } from "react";
+import { useInfo } from "@/utils/lnfoContext";
 import Image from "next/image";
 
 export default function Weather({ onSunrise, onSunset }) {
-  const [date, setDate] = useState("");
-  const { city } = useLocations();
+  const { city, date } = useInfo();
   const [forecast, setForecast] = useState(null);
-  console.log(city);
   const { lat, lng } = city.locationBias;
 
-  const fetchForecast = async (e) => {
-    e.preventDefault();
-
+  const fetchForecast = async () => {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     const apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lng}&dt=${date}`;
 
@@ -26,7 +22,6 @@ export default function Weather({ onSunrise, onSunset }) {
         onSunset(data.forecast.forecastday[0].astro.sunset);
       } else {
         setForecast(null);
-        alert("Forecast not available for the selected date.");
       }
     } catch (error) {
       console.error("Error fetching forecast:", error);
@@ -46,24 +41,13 @@ export default function Weather({ onSunrise, onSunset }) {
     }
   }
 
+  useEffect(() => {
+    if (date) {
+      fetchForecast();
+    }
+  }, [date]);
   return (
     <div>
-      <h2>Enter Date for Weather Forecast</h2>
-      <form onSubmit={fetchForecast}>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-          className="border border-gray-300 p-2 mr-4 rounded"
-        />
-        <button
-          type="submit"
-          className="bg-[#e9edc9] text-gray font-bold py-2 px-4 rounded"
-        >
-          Get Forecast
-        </button>
-      </form>
       {forecast && (
         <div>
           {/* <div>

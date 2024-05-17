@@ -1,8 +1,8 @@
-import { useLocations } from "@/utils/locationContext";
+import { useInfo } from "@/utils/lnfoContext";
 import { useState, useEffect } from "react";
 
 const CityInput = () => {
-  const { city, setCity } = useLocations(); // Use context
+  const { city, setCity } = useInfo(); // Use context
   const [input, setInput] = useState("");
   const [location, setLocation] = useState(null);
   const autocomplete = () => {
