@@ -89,13 +89,13 @@ const Dashboard = () => {
         {city.name && (
           <div className="w-full mb-4 flex justify-center">
             <button
-              className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-4 py-2"
+              className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-6 py-3"
               onClick={deleteCity}
             >
               <span className="transition-transform group-hover:translate-x-10">
                 {city.name}
               </span>
-              <span className="absolute right-4 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
+              <span className="absolute right-0 top-0 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
                 <svg
                   className="w-3 h-3 text-white fill-current"
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@ const Dashboard = () => {
           {locations.map((location, index) => (
             <div className="m-2" key={index}>
               <button
-                className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-4 py-2"
+                className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-6 py-3"
                 onClick={deleteLocation.bind(null, index)}
               >
                 <span className="transition-transform group-hover:translate-x-10">
