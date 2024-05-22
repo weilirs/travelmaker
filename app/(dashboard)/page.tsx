@@ -77,7 +77,7 @@ const Dashboard = () => {
         type="date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
-        className="border border-gray-300 p-2 mr-4 rounded"
+        className="border border-gray-300 p-2 mr-4 mt-4 rounded"
       />
       <button
         className="bg-[#ccd5ae] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4"
@@ -85,46 +85,51 @@ const Dashboard = () => {
       >
         Generate
       </button>
-      <div className="flex items-center justify-center flex-wrap mt-5">
+      <div className="flex flex-col items-center justify-center mt-5 w-full max-h-96 overflow-y-auto">
         {city.name && (
-          <button
-            className="relative w-40 h-12 bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all"
-            onClick={deleteCity}
-          >
-            <span className="absolute left-4 transition-transform group-hover:translate-x-10">
-              {city.name}
-            </span>
-            <span className="absolute right-4 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
-              <svg
-                className="w-3 h-3 text-white fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
-              </svg>
-            </span>
-          </button>
+          <div className="w-full mb-4 flex justify-center">
+            <button
+              className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-4 py-2"
+              onClick={deleteCity}
+            >
+              <span className="transition-transform group-hover:translate-x-10">
+                {city.name}
+              </span>
+              <span className="absolute right-4 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
+                <svg
+                  className="w-3 h-3 text-white fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
         )}
-        {locations.map((location, index) => (
-          <button
-            className="relative w-60 h-16 bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all"
-            onClick={deleteLocation.bind(null, index)}
-            key={index}
-          >
-            <span className="absolute left-4 transition-transform group-hover:translate-x-10">
-              {findCustomName(location.lat, location.lng) || "N/A"}
-            </span>
-            <span className="absolute right-0 top-0 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
-              <svg
-                className="w-3 h-3 text-white fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+        <div className="w-full flex flex-wrap justify-center mb-4">
+          {locations.map((location, index) => (
+            <div className="m-2" key={index}>
+              <button
+                className="relative w-auto h-auto bg-[#fec5bb] text-white font-bold rounded flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-red-700 hover:bg-red-700 transition-all px-4 py-2"
+                onClick={deleteLocation.bind(null, index)}
               >
-                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
-              </svg>
-            </span>
-          </button>
-        ))}
+                <span className="transition-transform group-hover:translate-x-10">
+                  {findCustomName(location.lat, location.lng) || "N/A"}
+                </span>
+                <span className="absolute right-0 top-0 flex items-center justify-center w-5 h-5 bg-red-700 transition-all group-hover:w-full">
+                  <svg
+                    className="w-3 h-3 text-white fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"></path>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
