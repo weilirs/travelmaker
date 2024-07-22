@@ -107,6 +107,9 @@ const Main = () => {
             </Modal>
           </div>
         )}
+        {/* <button className="bg-[#e9edc9] hover:bg-[#fefae0] text-gray font-bold py-2 px-4 rounded mt-4 self-center">
+          Your Reminders
+        </button> */}
       </div>
     </div>
   );
